@@ -1,0 +1,16 @@
+# Conteúdo
+/src/content/ @periclesanfe
+
+# Componentes UI
+/src/components/ @periclesanfe
+
+# Dados da grade curricular
+/src/data/ @periclesanfe
+
+# Configuração do projeto
+/*.json @periclesanfe
+/*.ts @periclesanfe
+/*.js @periclesanfe
+
+# GitHub config
+/.github/ @periclesanfe
