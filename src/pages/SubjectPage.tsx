@@ -1,8 +1,10 @@
 import { useParams, NavLink } from 'react-router-dom';
 import { getSubjectBySlug } from '../data/curriculum';
+import ComportamentoOrganizacionalContent from '../content/comportamento-organizacional/ComportamentoOrganizacionalContent';
 import MarketingContent from '../content/marketing-comercio-eletronico/MarketingContent';
 
 const contentRegistry: Record<string, React.ComponentType> = {
+  'comportamento-organizacional': ComportamentoOrganizacionalContent,
   'marketing-comercio-eletronico': MarketingContent,
 };
 

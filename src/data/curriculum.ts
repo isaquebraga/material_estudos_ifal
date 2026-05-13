@@ -84,7 +84,7 @@ const subjects: Subject[] = [
   // ═══════ OPTATIVAS — GESTÃO DE TI ═══════
   { id: 'cdon', name: 'Ciência de Dados Orientada a Negócios', slug: 'ciencia-dados-negocios', code: 'CDON', period: 'optativa', axis: 'FPF', hours: 80, optativeCategory: 'gestao', hasContent: false },
   { id: 'gppr', name: 'Gestão por Processos', slug: 'gestao-processos', code: 'GPPR', period: 'optativa', axis: 'FPF', hours: 80, optativeCategory: 'gestao', hasContent: false },
-  { id: 'corg', name: 'Comportamento Organizacional', slug: 'comportamento-organizacional', code: 'CORG', period: 'optativa', axis: 'FPF', hours: 80, optativeCategory: 'gestao', hasContent: false },
+  { id: 'corg', name: 'Comportamento Organizacional', slug: 'comportamento-organizacional', code: 'CORG', period: 'optativa', axis: 'FPF', hours: 80, optativeCategory: 'gestao', hasContent: true },
   { id: 'mkce', name: 'Marketing e Comércio Eletrônico', slug: 'marketing-comercio-eletronico', code: 'MKCE', period: 'optativa', axis: 'FPF', hours: 80, optativeCategory: 'gestao', hasContent: true },
   { id: 'geti', name: 'Gestão Estratégica de TI', slug: 'gestao-estrategica-ti', code: 'GETI', period: 'optativa', axis: 'FPF', hours: 80, optativeCategory: 'gestao', hasContent: false },
 
