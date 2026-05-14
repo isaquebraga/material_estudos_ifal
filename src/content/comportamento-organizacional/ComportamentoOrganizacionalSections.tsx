@@ -1,4 +1,5 @@
 import AIQuizGenerator from '../../components/ui/AIQuizGenerator';
+import AIKahootQuiz from '../../components/ui/AIKahootQuiz';
 import ConceptCard from '../../components/ui/ConceptCard';
 import FlowDiagram from '../../components/ui/FlowDiagram';
 import HighlightBox from '../../components/ui/HighlightBox';
@@ -1345,8 +1346,7 @@ function ConflictNegotiationSection() {
 
 function QuizSection() {
   return (
-    <section className="animate-fade-in space-y-6">
-      <SectionHeader title="Quiz de Revisão" subtitle="Escolha entre o modo clássico, perguntas com IA ou a experiência em estilo Kahoot." colorClass="text-accent4" />
+    <section className="animate-fade-in">
       <QuizTabs
         normal={(
           <div>
@@ -1366,6 +1366,7 @@ function QuizSection() {
           </div>
         )}
         kahoot={<KahootQuiz questions={QUIZ_DATA} />}
+        aiKahoot={<AIKahootQuiz guideContext={COMPORTAMENTO_ORGANIZACIONAL_GUIDE_CONTEXT} topics={COMPORTAMENTO_ORGANIZACIONAL_TOPICS} />}
       />
     </section>
   );

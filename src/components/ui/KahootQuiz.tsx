@@ -3,6 +3,8 @@ import type { QuizQuestionData } from './QuizCard';
 
 interface KahootQuizProps {
   questions: QuizQuestionData[];
+  onGenerateNewQuiz?: () => void;
+  newQuizButtonLabel?: string;
 }
 
 interface AnswerRecord {
@@ -18,8 +20,39 @@ const answerStyles = [
   { color: 'bg-[#87bb4f] hover:bg-[#93c95a]', shape: 'square' },
 ];
 
+function formatQuestionNumber(current: number, total: number) {
+  const width = String(total).length;
+  return `${String(current).padStart(width, '0')}/${total}`;
+}
+
 function cleanQuestion(question: string) {
   return question.replace(/^\s*\d+\.\s*/, '');
+}
+
+function getQuestionTextClass(question: string) {
+  const length = cleanQuestion(question).length;
+
+  if (length > 520) {
+    return 'max-w-5xl text-left text-sm leading-normal md:text-justify md:text-base lg:text-lg';
+  }
+
+  if (length > 360) {
+    return 'max-w-5xl text-left text-base leading-snug md:text-justify md:text-xl lg:text-2xl';
+  }
+
+  if (length > 260) {
+    return 'max-w-5xl text-left text-lg leading-snug md:text-justify md:text-2xl lg:text-3xl';
+  }
+
+  if (length > 180) {
+    return 'max-w-5xl text-center text-2xl leading-tight md:text-3xl lg:text-4xl';
+  }
+
+  if (length > 110) {
+    return 'max-w-5xl text-center text-3xl leading-tight md:text-4xl lg:text-5xl';
+  }
+
+  return 'max-w-5xl text-center text-3xl leading-tight md:text-5xl lg:text-6xl';
 }
 
 function shuffleQuestions(questions: QuizQuestionData[]) {
@@ -33,7 +66,7 @@ function shuffleQuestions(questions: QuizQuestionData[]) {
   return shuffled;
 }
 
-export default function KahootQuiz({ questions }: KahootQuizProps) {
+export default function KahootQuiz({ questions, onGenerateNewQuiz, newQuizButtonLabel = 'Gerar novo quiz' }: KahootQuizProps) {
   const [quizQuestions, setQuizQuestions] = useState(() => shuffleQuestions(questions));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -44,9 +77,6 @@ export default function KahootQuiz({ questions }: KahootQuizProps) {
   const totalQuestions = quizQuestions.length;
   const correctCount = useMemo(() => records.filter(record => record.isCorrect).length, [records]);
   const wrongCount = records.length - correctCount;
-  const progressPct = totalQuestions > 0
-    ? Math.round(((finished ? totalQuestions : currentIndex + 1) / totalQuestions) * 100)
-    : 0;
 
   const resetQuiz = () => {
     setQuizQuestions(shuffleQuestions(questions));
@@ -97,8 +127,8 @@ export default function KahootQuiz({ questions }: KahootQuizProps) {
               Resumo das perguntas respondidas e das alternativas assinaladas.
             </p>
           </div>
-          <button type="button" onClick={resetQuiz} className="btn-primary px-5 py-2.5 text-sm">
-            Gerar novo quiz
+          <button type="button" onClick={onGenerateNewQuiz || resetQuiz} className="btn-primary px-5 py-2.5 text-sm">
+            {newQuizButtonLabel}
           </button>
         </div>
 
@@ -146,26 +176,37 @@ export default function KahootQuiz({ questions }: KahootQuizProps) {
 
   const answered = selectedIndex !== null;
   const selectedIsCorrect = selectedIndex === currentQuestion.correctIndex;
+  const questionText = cleanQuestion(currentQuestion.question);
 
   return (
     <div className="animate-fade-in space-y-4">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-semibold text-text-muted uppercase tracking-[0.18em]">
-            Kahoot
-          </p>
-          <h3 className="font-display text-3xl md:text-4xl font-black leading-tight text-text">
-            Q{currentIndex + 1}
-          </h3>
-        </div>
-        <span className="text-sm font-bold text-text-muted">{progressPct}%</span>
-      </div>
-
-      <div className="h-2 overflow-hidden rounded-full bg-border">
+      <div className="flex items-center gap-3">
+        <span className="shrink-0 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-black tabular-nums text-text">
+          {formatQuestionNumber(currentIndex + 1, totalQuestions)}
+        </span>
         <div
-          className="h-full rounded-full bg-accent transition-[width] duration-500"
-          style={{ width: `${progressPct}%` }}
-        />
+          className="grid flex-1 items-center gap-1"
+          style={{ gridTemplateColumns: `repeat(${totalQuestions}, minmax(0, 1fr))` }}
+          aria-label={`Pergunta ${currentIndex + 1} de ${totalQuestions}`}
+        >
+          {quizQuestions.map((question, index) => {
+            const answeredSegment = index < records.length;
+            const currentSegment = index === currentIndex;
+
+            return (
+              <span
+                key={`${question.id}-${index}`}
+                className={`block rounded-full transition-all duration-300 ${
+                  currentSegment
+                    ? 'h-4 bg-accent shadow-[0_0_0_3px_rgba(108,99,255,0.22)]'
+                    : answeredSegment
+                      ? 'h-2.5 bg-accent'
+                      : 'h-2.5 bg-border'
+                }`}
+              />
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[3.5rem_minmax(0,1fr)]">
@@ -185,9 +226,9 @@ export default function KahootQuiz({ questions }: KahootQuizProps) {
         </aside>
 
         <div className="space-y-3">
-          <section className="study-surface flex min-h-[230px] items-center justify-center px-5 py-8 text-center md:min-h-[300px] md:px-8">
-            <h4 className="font-display text-3xl font-black leading-tight text-text md:text-5xl lg:text-6xl">
-              {cleanQuestion(currentQuestion.question)}
+          <section className="study-surface flex h-[260px] items-center justify-center overflow-y-auto px-5 py-6 md:h-[320px] md:px-8">
+            <h4 className={`font-display font-black text-text break-words hyphens-auto ${getQuestionTextClass(currentQuestion.question)}`}>
+              {questionText}
             </h4>
           </section>
 
