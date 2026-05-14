@@ -50,7 +50,6 @@ export const COMPORTAMENTO_ORGANIZACIONAL_SECTIONS = [
   { id: 'lideranca', title: 'Liderança', shortTitle: 'Liderança' },
   { id: 'conflito', title: 'Conflito e Negociação', shortTitle: 'Conflitos' },
   { id: 'quiz', title: 'Quiz de Revisão', shortTitle: 'Quiz' },
-  { id: 'iaquiz', title: 'Quiz com IA', shortTitle: 'Quiz IA' },
 ];
 
 export const QUIZ_DATA: QuizQuestionData[] = [

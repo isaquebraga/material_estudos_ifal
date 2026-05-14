@@ -20,7 +20,7 @@ export default function AIQuizGenerator({ guideContext, topics }: AIQuizGenerato
     answerQuestion,
     resetScore,
   } = useGeminiQuiz(guideContext);
-  const [selectedTopic, setSelectedTopic] = useState('aleatorio');
+  const [selectedTopicValues, setSelectedTopicValues] = useState<string[]>(() => topics.map(topic => topic.value));
   const [selectedDifficulty, setSelectedDifficulty] = useState('mista');
   const [selectedCount, setSelectedCount] = useState<QuestionCount>(1);
 
@@ -32,13 +32,35 @@ export default function AIQuizGenerator({ guideContext, topics }: AIQuizGenerato
   };
 
   const handleGenerate = () => {
-    generateQuestion(selectedTopic, selectedDifficulty, selectedCount);
+    if (selectedTopicValues.length === 0) return;
+
+    const selectedTopics = selectedTopicValues.length === topics.length
+      ? ['aleatorio']
+      : topics
+        .filter(topic => selectedTopicValues.includes(topic.value))
+        .map(topic => topic.label);
+
+    generateQuestion(selectedTopics, selectedDifficulty, selectedCount);
   };
 
   const handleAnswer = (questionIndex: number, optionIndex: number) => {
     answerQuestion(questionIndex, optionIndex);
   };
 
+  const toggleTopic = (value: string) => {
+    setSelectedTopicValues(prev => {
+      if (prev.includes(value)) return prev.filter(item => item !== value);
+      return [...prev, value];
+    });
+  };
+
+  const toggleAllTopics = () => {
+    setSelectedTopicValues(prev => (
+      prev.length === topics.length ? [] : topics.map(topic => topic.value)
+    ));
+  };
+
+  const allTopicsSelected = selectedTopicValues.length === topics.length;
   const progressPct = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0;
   const generateLabel = loading
     ? `Gerando ${selectedCount}...`
@@ -65,57 +87,100 @@ export default function AIQuizGenerator({ guideContext, topics }: AIQuizGenerato
 
   return (
     <div className="space-y-4">
-      <div className="study-surface p-4 md:p-5 flex gap-3 flex-wrap items-end">
-        <div className="flex-1 min-w-[170px]">
-          <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-1">Tema</label>
-          <select
-            value={selectedTopic}
-            onChange={e => setSelectedTopic(e.target.value)}
-            className="w-full bg-bg text-text border border-border rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-          >
-            <option value="aleatorio">Aleatório</option>
-            {topics.map(t => (
-              <option key={t.value} value={t.value}>{t.label}</option>
-            ))}
-          </select>
+      <div className="study-surface p-4 md:p-5 space-y-4">
+        <div>
+          <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">
+            Conteúdos para gerar perguntas
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
+            <label
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold cursor-pointer transition-colors ${
+                allTopicsSelected
+                  ? 'border-accent bg-accent/10 text-text'
+                  : 'border-border bg-bg/40 text-text-muted hover:border-border-hover hover:text-text'
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={allTopicsSelected}
+                onChange={toggleAllTopics}
+                className="sr-only"
+              />
+              <span className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
+                allTopicsSelected ? 'border-accent bg-accent text-white' : 'border-border'
+              }`}>
+                {allTopicsSelected ? '✓' : ''}
+              </span>
+              Todos
+            </label>
+            {topics.map(topic => {
+              const checked = selectedTopicValues.includes(topic.value);
+
+              return (
+                <label
+                  key={topic.value}
+                  className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold cursor-pointer transition-colors ${
+                    checked
+                      ? 'border-accent bg-accent/10 text-text'
+                      : 'border-border bg-bg/40 text-text-muted hover:border-border-hover hover:text-text'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleTopic(topic.value)}
+                    className="sr-only"
+                  />
+                  <span className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
+                    checked ? 'border-accent bg-accent text-white' : 'border-border'
+                  }`}>
+                    {checked ? '✓' : ''}
+                  </span>
+                  {topic.label}
+                </label>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="flex-1 min-w-[170px]">
-          <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-1">Dificuldade</label>
-          <select
-            value={selectedDifficulty}
-            onChange={e => setSelectedDifficulty(e.target.value)}
-            className="w-full bg-bg text-text border border-border rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-          >
-            <option value="mista">Mista</option>
-            <option value="facil">Fácil</option>
-            <option value="media">Média</option>
-            <option value="dificil">Difícil</option>
-          </select>
-        </div>
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
+          <div className="flex-1 min-w-[170px]">
+            <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-1">Dificuldade</label>
+            <select
+              value={selectedDifficulty}
+              onChange={e => setSelectedDifficulty(e.target.value)}
+              className="w-full bg-bg text-text border border-border rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            >
+              <option value="mista">Mista</option>
+              <option value="facil">Fácil</option>
+              <option value="media">Média</option>
+              <option value="dificil">Difícil</option>
+            </select>
+          </div>
 
-        <div className="flex-1 min-w-[150px]">
-          <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-1">Quantidade</label>
-          <select
-            value={selectedCount}
-            onChange={e => setSelectedCount(Number(e.target.value) as QuestionCount)}
-            className="w-full bg-bg text-text border border-border rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-          >
-            {QUESTION_COUNT_OPTIONS.map(count => (
-              <option key={count} value={count}>
-                {count === 1 ? '1 pergunta' : `${count} perguntas`}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-1">Quantidade</label>
+            <select
+              value={selectedCount}
+              onChange={e => setSelectedCount(Number(e.target.value) as QuestionCount)}
+              className="w-full bg-bg text-text border border-border rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            >
+              {QUESTION_COUNT_OPTIONS.map(count => (
+                <option key={count} value={count}>
+                  {count === 1 ? '1 pergunta' : `${count} perguntas`}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <button
-          onClick={handleGenerate}
-          disabled={loading}
-          className="btn-primary px-5 py-2.5 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {generateLabel}
-        </button>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || selectedTopicValues.length === 0}
+            className="btn-primary px-5 py-2.5 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {generateLabel}
+          </button>
+        </div>
       </div>
 
       <div className="study-surface flex gap-5 items-center px-4 py-3.5 text-sm">

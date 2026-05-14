@@ -2,7 +2,9 @@ import AIQuizGenerator from '../../components/ui/AIQuizGenerator';
 import ConceptCard from '../../components/ui/ConceptCard';
 import FlowDiagram from '../../components/ui/FlowDiagram';
 import HighlightBox from '../../components/ui/HighlightBox';
+import KahootQuiz from '../../components/ui/KahootQuiz';
 import QuizCard from '../../components/ui/QuizCard';
+import QuizTabs from '../../components/ui/QuizTabs';
 import { MARKETING_GUIDE_CONTEXT, MARKETING_TOPICS, QUIZ_DATA } from './data';
 
 interface MarketingSectionsProps {
@@ -646,22 +648,25 @@ function SegmentacaoSection() {
 function QuizSection() {
   return (
     <section className="animate-fade-in space-y-6">
-      <SectionHeader title="Quiz de Revisão" subtitle="25 perguntas para testar seus conhecimentos" colorClass="text-accent4" />
-      {QUIZ_DATA.map(q => (
-        <QuizCard key={q.id} data={q} />
-      ))}
-    </section>
-  );
-}
-
-function AiQuizSection() {
-  return (
-    <section className="animate-fade-in space-y-6">
-      <SectionHeader title="Quiz com IA" subtitle="Perguntas inéditas geradas pelo Google Gemini" colorClass="text-accent3" />
-      <HighlightBox title="Como funciona?">
-        <p>A IA analisa todo o conteúdo deste guia e gera lotes de 1, 5 ou 10 perguntas inéditas com 4 alternativas, resposta correta e explicação detalhada.</p>
-      </HighlightBox>
-      <AIQuizGenerator guideContext={MARKETING_GUIDE_CONTEXT} topics={MARKETING_TOPICS} />
+      <SectionHeader title="Quiz de Revisão" subtitle="Escolha entre o modo clássico, perguntas com IA ou a experiência em estilo Kahoot." colorClass="text-accent4" />
+      <QuizTabs
+        normal={(
+          <div>
+            {QUIZ_DATA.map(q => (
+              <QuizCard key={q.id} data={q} />
+            ))}
+          </div>
+        )}
+        ai={(
+          <div className="space-y-4">
+            <HighlightBox title="Como funciona?">
+              <p>A IA analisa os conteúdos selecionados do guia e gera lotes de 1, 5 ou 10 perguntas inéditas com 4 alternativas, resposta correta e explicação detalhada.</p>
+            </HighlightBox>
+            <AIQuizGenerator guideContext={MARKETING_GUIDE_CONTEXT} topics={MARKETING_TOPICS} />
+          </div>
+        )}
+        kahoot={<KahootQuiz questions={QUIZ_DATA} />}
+      />
     </section>
   );
 }
@@ -697,7 +702,7 @@ export default function MarketingSections({ activeSection }: MarketingSectionsPr
     case 'quiz':
       return <QuizSection />;
     case 'iaquiz':
-      return <AiQuizSection />;
+      return <QuizSection />;
     default:
       return null;
   }

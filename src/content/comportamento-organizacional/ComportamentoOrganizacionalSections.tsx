@@ -2,7 +2,9 @@ import AIQuizGenerator from '../../components/ui/AIQuizGenerator';
 import ConceptCard from '../../components/ui/ConceptCard';
 import FlowDiagram from '../../components/ui/FlowDiagram';
 import HighlightBox from '../../components/ui/HighlightBox';
+import KahootQuiz from '../../components/ui/KahootQuiz';
 import QuizCard from '../../components/ui/QuizCard';
+import QuizTabs from '../../components/ui/QuizTabs';
 import {
   COMPORTAMENTO_ORGANIZACIONAL_GUIDE_CONTEXT,
   COMPORTAMENTO_ORGANIZACIONAL_TOPICS,
@@ -1344,24 +1346,27 @@ function ConflictNegotiationSection() {
 function QuizSection() {
   return (
     <section className="animate-fade-in space-y-6">
-      <SectionHeader title="Quiz de Revisão" subtitle="30 perguntas cobrindo os principais tópicos dos materiais" colorClass="text-accent4" />
-      {QUIZ_DATA.map(question => (
-        <QuizCard key={question.id} data={question} />
-      ))}
-    </section>
-  );
-}
-
-function AiQuizSection() {
-  return (
-    <section className="animate-fade-in space-y-6">
-      <SectionHeader title="Quiz com IA" subtitle="Perguntas inéditas geradas a partir do guia da disciplina" colorClass="text-accent3" />
-      <HighlightBox title="Como funciona?">
-        <p>
-          A IA usa o resumo estruturado de Comportamento Organizacional e os temas do módulo para gerar lotes de 1, 5 ou 10 perguntas inéditas com alternativas, resposta correta e explicação.
-        </p>
-      </HighlightBox>
-      <AIQuizGenerator guideContext={COMPORTAMENTO_ORGANIZACIONAL_GUIDE_CONTEXT} topics={COMPORTAMENTO_ORGANIZACIONAL_TOPICS} />
+      <SectionHeader title="Quiz de Revisão" subtitle="Escolha entre o modo clássico, perguntas com IA ou a experiência em estilo Kahoot." colorClass="text-accent4" />
+      <QuizTabs
+        normal={(
+          <div>
+            {QUIZ_DATA.map(question => (
+              <QuizCard key={question.id} data={question} />
+            ))}
+          </div>
+        )}
+        ai={(
+          <div className="space-y-4">
+            <HighlightBox title="Como funciona?">
+              <p>
+                A IA usa os conteúdos selecionados de Comportamento Organizacional para gerar lotes de 1, 5 ou 10 perguntas inéditas com alternativas, resposta correta e explicação.
+              </p>
+            </HighlightBox>
+            <AIQuizGenerator guideContext={COMPORTAMENTO_ORGANIZACIONAL_GUIDE_CONTEXT} topics={COMPORTAMENTO_ORGANIZACIONAL_TOPICS} />
+          </div>
+        )}
+        kahoot={<KahootQuiz questions={QUIZ_DATA} />}
+      />
     </section>
   );
 }
@@ -1397,7 +1402,7 @@ export default function ComportamentoOrganizacionalSections({ activeSection }: C
     case 'quiz':
       return <QuizSection />;
     case 'iaquiz':
-      return <AiQuizSection />;
+      return <QuizSection />;
     default:
       return null;
   }

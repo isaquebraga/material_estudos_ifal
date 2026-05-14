@@ -100,7 +100,7 @@ export function useGeminiQuiz(guideContext: string) {
     selectedAnswers: {},
   });
 
-  const generateQuestion = useCallback(async (topic: string = 'aleatorio', difficulty: string = 'mista', count: number = 1) => {
+  const generateQuestion = useCallback(async (topicSelection: string | string[] = 'aleatorio', difficulty: string = 'mista', count: number = 1) => {
     if (!hasApiKey()) {
       setState(prev => ({ ...prev, error: 'Configure sua API key nas Configurações antes de usar o quiz com IA.' }));
       return;
@@ -116,9 +116,12 @@ export function useGeminiQuiz(guideContext: string) {
       selectedAnswers: {},
     }));
 
-    const topicInstruction = topic === 'aleatorio'
-      ? 'Escolha ALEATORIAMENTE temas do guia para gerar as perguntas. Varie bastante.'
-      : `Gere as perguntas especificamente sobre o tema: ${topic}.`;
+    const selectedTopics = (Array.isArray(topicSelection) ? topicSelection : [topicSelection]).filter(Boolean);
+    const hasSpecificTopics = selectedTopics.length > 0 && !selectedTopics.includes('aleatorio');
+
+    const topicInstruction = hasSpecificTopics
+      ? `Gere as perguntas APENAS sobre os seguintes conteudos selecionados: ${selectedTopics.join(', ')}. Varie entre eles quando novas perguntas forem solicitadas.`
+      : 'Escolha ALEATORIAMENTE temas do guia para gerar as perguntas. Varie bastante.';
 
     const diffInstruction: Record<string, string> = {
       facil: 'Nivel FACIL: foque em definicoes diretas e conceitos basicos.',
