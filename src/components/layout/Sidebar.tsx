@@ -25,6 +25,25 @@ function MoonIcon() {
   );
 }
 
+function HomeIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m3 10.8 9-7.2 9 7.2" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5.5 9.5V20h13V9.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 20v-6h5v6" />
+    </svg>
+  );
+}
+
+function GearIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.37a1.7 1.7 0 0 0-1 1.55V21a2 2 0 0 1-4 0v-.08a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 0 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.63 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 0 1 0-4h.08a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.63a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.08a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 0 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.37 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 0 1 0 4h-.08A1.7 1.7 0 0 0 19.4 15Z" />
+    </svg>
+  );
+}
+
 function getInitialTheme(): Theme {
   try {
     const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
@@ -82,6 +101,16 @@ export default function Sidebar() {
 
   const handleNavigate = () => setMobileOpen(false);
   const nextTheme = theme === 'dark' ? 'light' : 'dark';
+  const activeOptatives = periods.find(period => period.number === 'optativa')?.subjects.some(s => location.pathname === `/materia/${s.slug}`) || false;
+
+  const expandCollapsedGroup = (key: string) => {
+    setCollapsed(false);
+    setExpandedPeriods(prev => {
+      const next = new Set(prev);
+      next.add(key);
+      return next;
+    });
+  };
 
   const mainNavItem = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
@@ -90,28 +119,28 @@ export default function Sidebar() {
         : 'text-text-muted hover:text-text hover:bg-card-hover'
     }`;
 
-  const themeToggle = (
+  const renderThemeToggle = (compact = false) => (
     <button
       type="button"
       onClick={() => setTheme(nextTheme)}
       aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
       aria-pressed={theme === 'light'}
-      className="group relative flex h-10 w-[4.75rem] shrink-0 items-center rounded-full border border-border bg-card px-1.5 transition-colors duration-300 hover:border-border-hover hover:bg-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+      title={theme === 'dark' ? 'Tema escuro' : 'Tema claro'}
+      className={`${compact ? 'h-10 w-10 justify-center rounded-xl px-0' : 'h-10 w-[4.75rem] rounded-full px-1.5'} relative flex shrink-0 items-center border border-border bg-card transition-colors duration-300 hover:border-border-hover hover:bg-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg`}
     >
-      <span className="absolute left-2 text-accent4 transition-opacity duration-300 group-aria-pressed:opacity-100 opacity-35">
-        <SunIcon />
-      </span>
-      <span className="absolute right-2 text-accent transition-opacity duration-300 group-aria-pressed:opacity-35 opacity-100">
-        <MoonIcon />
-      </span>
+      {!compact && (
+        <span className={`absolute ${theme === 'dark' ? 'left-2 text-accent4' : 'right-2 text-accent'} transition-opacity duration-300`}>
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+        </span>
+      )}
       <span
-        className={`relative z-10 flex h-7 w-7 items-center justify-center rounded-full text-white shadow-[0_6px_16px_rgba(0,0,0,0.26)] transition-transform duration-300 ease-out ${
-          theme === 'light'
-            ? 'translate-x-[2rem] bg-accent4'
-            : 'translate-x-0 bg-accent'
+        className={`${compact ? 'h-7 w-7 translate-x-0' : `h-7 w-7 ${theme === 'dark' ? 'translate-x-[2rem]' : 'translate-x-0'}`} relative z-10 flex items-center justify-center rounded-full text-white shadow-[0_6px_16px_rgba(0,0,0,0.26)] transition-transform duration-300 ease-out ${
+          theme === 'dark'
+            ? 'bg-accent'
+            : 'bg-accent4'
         }`}
       >
-        {theme === 'light' ? <SunIcon /> : <MoonIcon />}
+        {theme === 'dark' ? <MoonIcon /> : <SunIcon />}
       </span>
     </button>
   );
@@ -158,10 +187,76 @@ export default function Sidebar() {
       <div className="border-t border-border p-3">
         <div className="flex items-center gap-2">
           <NavLink to="/configuracoes" onClick={handleNavigate} className={({ isActive }) => `${mainNavItem({ isActive })} flex-1`}>
-          Configurações
+            <GearIcon />
+            Configurações
           </NavLink>
-          {themeToggle}
+          {renderThemeToggle()}
         </div>
+      </div>
+    </div>
+  );
+
+  const collapsedNavButton = (active = false) =>
+    `flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-black transition-colors duration-200 ${
+      active
+        ? 'border-accent/40 bg-accent/20 text-text shadow-[0_6px_16px_rgba(108,99,255,0.2)]'
+        : 'border-border bg-card text-text-muted hover:border-border-hover hover:bg-card-hover hover:text-text'
+    }`;
+
+  const collapsedSidebarContent = (
+    <div className="flex h-full flex-col items-center">
+      <NavLink
+        to="/"
+        end
+        title="Início"
+        aria-label="Início"
+        onClick={handleNavigate}
+        className={({ isActive }) => `${collapsedNavButton(isActive)} mt-5 mb-3`}
+      >
+        <HomeIcon />
+      </NavLink>
+
+      <nav className="flex min-h-0 flex-1 flex-col items-center gap-2 overflow-y-auto px-2 py-2">
+        {periods.filter(period => period.number !== 'optativa').map(period => {
+          const key = `p${period.number}`;
+          const hasActiveChild = period.subjects.some(s => location.pathname === `/materia/${s.slug}`);
+
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => expandCollapsedGroup(key)}
+              className={collapsedNavButton(hasActiveChild)}
+              title={period.label}
+              aria-label={`Abrir ${period.label}`}
+            >
+              {period.number}
+            </button>
+          );
+        })}
+
+        <button
+          type="button"
+          onClick={() => expandCollapsedGroup('opt')}
+          className={collapsedNavButton(activeOptatives)}
+          title="Optativas"
+          aria-label="Abrir optativas"
+        >
+          OP
+        </button>
+      </nav>
+
+      <div className="flex w-full flex-col items-center gap-2 border-t border-border p-2.5">
+        <NavLink
+          to="/configuracoes"
+          title="Configurações"
+          aria-label="Configurações"
+          onClick={handleNavigate}
+          className={({ isActive }) => collapsedNavButton(isActive)}
+        >
+          <GearIcon />
+        </NavLink>
+        {renderThemeToggle(true)}
       </div>
     </div>
   );
@@ -185,28 +280,18 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`sidebar-surface hidden lg:sticky lg:top-0 lg:flex h-screen self-start flex-col border-r border-border ${collapsed ? 'w-[4.5rem]' : 'w-[18rem]'} transition-[width] duration-300 flex-shrink-0`}
+        className={`sidebar-surface relative hidden lg:sticky lg:top-0 lg:flex h-screen self-start flex-col border-r border-border ${collapsed ? 'w-[4.5rem]' : 'w-[18rem]'} transition-[width] duration-300 flex-shrink-0`}
       >
-        <div className="min-h-0 flex-1">
-          {!collapsed && sidebarContent}
-          {collapsed && (
-            <div className="flex h-full flex-col items-center pt-7 gap-3">
-              <span className="w-8 h-8 rounded-full bg-accent/20 border border-accent/30" />
-              <span className="font-display font-bold text-sm text-text-muted">BSI</span>
-            </div>
-          )}
-        </div>
-        <div className="relative h-11 border-t border-border">
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="absolute left-1/2 top-0 hidden h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-text-muted shadow-[0_8px_22px_rgba(0,0,0,0.28)] transition-colors duration-200 hover:border-border-hover hover:bg-card-hover hover:text-text lg:flex"
-            aria-label={collapsed ? 'Expandir sidebar' : 'Minimizar sidebar'}
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.4} aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d={collapsed ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} />
-            </svg>
-          </button>
-        </div>
+        <div className="min-h-0 flex-1">{collapsed ? collapsedSidebarContent : sidebarContent}</div>
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -right-[18px] top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-text-muted shadow-[0_8px_22px_rgba(0,0,0,0.28)] transition-colors duration-200 hover:border-border-hover hover:bg-card-hover hover:text-text lg:flex"
+          aria-label={collapsed ? 'Expandir sidebar' : 'Minimizar sidebar'}
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.4} aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d={collapsed ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} />
+          </svg>
+        </button>
       </aside>
 
       <aside
