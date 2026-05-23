@@ -6,8 +6,14 @@ import FlowDiagram from '../../components/ui/FlowDiagram';
 import HighlightBox from '../../components/ui/HighlightBox';
 import QuizTabs from '../../components/ui/QuizTabs';
 import {
+    ADMINISTRACAO_PROJETO_BANCO_DADOS_GUIDE_CONTEXT,
     ADMINISTRACAO_PROJETO_BANCO_DADOS_TOPICS
 } from './data';
+import {
+    COMPORTAMENTO_ORGANIZACIONAL_GUIDE_CONTEXT,
+    COMPORTAMENTO_ORGANIZACIONAL_TOPICS,
+    QUIZ_DATA
+} from "../comportamento-organizacional/data.ts";
 
 interface AdministracaoProjetoBancoDadosSectionsProps {
     activeSection: string;
@@ -38,23 +44,6 @@ interface StatItem {
     accent: string;
 }
 
-const foundations: ConceptItem[] = [
-    {
-        title: 'Indivíduos',
-        description: 'Valores, atitudes, percepção, personalidade, motivação e diferenças individuais explicam como cada pessoa interpreta e reage ao trabalho.',
-        accent: 'accent',
-    },
-    {
-        title: 'Grupos',
-        description: 'Papéis, normas, status, coesividade, diversidade e comunicação moldam a forma como pessoas trabalham em conjunto.',
-        accent: 'accent3',
-    },
-    {
-        title: 'Estrutura',
-        description: 'Processos, desenho do trabalho, liderança, recompensas e regras organizacionais influenciam o comportamento cotidiano.',
-        accent: 'accent5',
-    },
-];
 
 function SectionHeader({ title, subtitle, colorClass }: SectionHeaderProps) {
     return (
@@ -101,37 +90,156 @@ function StatStrip({ items }: { items: StatItem[] }) {
     );
 }
 
+const primeira_nota: ConceptItem[] = [
+    {
+        title: 'Projeto: Fase 1 - 2 Pontos',
+        description: 'Consiste na modelagem de dados com Oracle Database Modeler. É dividido em 5 fases e feito em grupo de até 3 pessoas.',
+        accent: 'accent',
+    },
+
+    {
+        title: 'Projeto: Fase 2 - 2 Pontos',
+        description: 'Provas individuais, sem consulta e dividida em 3 partes.',
+        accent: 'accent',
+    },
+    {
+        title: 'Prova 1 - Parte 1',
+        description: 'Consiste na modelagem de dados com Oracle Database Modeler. É dividido em 5 fases e feito em grupo de até 3 pessoas.',
+        accent: 'accent',
+    },
+
+    {
+        title: 'Prova 1 - Parte 2',
+        description: 'Provas individuais, sem consulta e dividida em 3 partes.',
+        accent: 'accent',
+    },
+]
+
+const segunda_nota: ConceptItem[] = [
+    {
+        title: 'Projeto: Fase 3 - 2 Pontos',
+        description: 'Consiste na modelagem de dados com Oracle Database Modeler. É dividido em 5 fases e feito em grupo de até 3 pessoas.',
+        accent: 'accent',
+    },
+
+    {
+        title: 'Projeto: Fase 4 - 2 Pontos',
+        description: 'Provas individuais, sem consulta e dividida em 3 partes.',
+        accent: 'accent',
+    },
+    {
+        title: 'Projeto: Fase 5 - 2 Pontos',
+        description: 'Provas individuais, sem consulta e dividida em 3 partes.',
+        accent: 'accent',
+    },
+
+    {
+        title: 'Prova 2',
+        description: 'Provas individuais, sem consulta e dividida em 3 partes.',
+        accent: 'accent',
+    },
+]
+
 function IntroSection() {
     return (
         <section className="animate-fade-in space-y-6">
-            <SectionHeader title="O que é Comportamento Organizacional?" subtitle="Campo de estudo para entender, prever e melhorar o comportamento humano nas organizações" colorClass="text-accent" />
-            <HighlightBox title="Definição central">
-                <p>
-                    Comportamento Organizacional é o campo que investiga o impacto que <strong>indivíduos</strong>, <strong>grupos</strong> e <strong>estruturas</strong> exercem no comportamento dentro das organizações, com a finalidade de aplicar esse conhecimento na melhoria da eficácia organizacional.
-                </p>
-            </HighlightBox>
+            <SectionHeader title="Conceitos Básicos" subtitle="Método de avaliação, projeto e softwares necessários." colorClass="text-accent" />
 
-            <ConceptGrid items={foundations} columns="md:grid-cols-3" />
+        </section>
+    );
+}
 
-            <HighlightBox title="O comportamento não é aleatório" accent="var(--color-accent3)">
-                <p>
-                    O material diferencia a gestão baseada em <strong>evidências científicas</strong>, relações de causa e efeito e estudo sistemático de decisões guiadas por intuição, pressentimento ou achismo.
-                </p>
-            </HighlightBox>
+function ModelagemSection() {
+    return (
+        <section className="animate-fade-in space-y-6">
+            <SectionHeader title="Modelagem de Dados" subtitle="Tabelas, colunas, FK, PK, índices e etc." colorClass="text-accent"></SectionHeader>
+        </section>
+    )
+}
 
-            <div>
-                <h3 className="font-display font-bold text-xl text-accent2 mb-3">Ciências comportamentais que apoiam o CO</h3>
-                <PanelList items={behavioralSciences} />
-            </div>
+function DdlSection() {
+    return (
+        <section className="animate-fade-in space-y-6">
+            <SectionHeader title="DDL" subtitle="" colorClass="text-accent"></SectionHeader>
+        </section>
+    )
+}
+
+function SegurancaSection() {
+    return (
+        <section className="animate-fade-in space-y-6">
+            <SectionHeader title="Segurança" subtitle="Usuários, senhas, recursos, papéis, backup e recovery e plano de recuperação de desastres." colorClass="text-accent"></SectionHeader>
+        </section>
+    )
+}
+
+function ArquiteturaSection() {
+    return (
+        <section className="animate-fade-in space-y-6">
+            <SectionHeader title="Arquitetura" subtitle="" colorClass="text-accent"></SectionHeader>
+        </section>
+    )
+}
+
+function GerenciamentoSection() {
+    return (
+        <section className="animate-fade-in space-y-6">
+            <SectionHeader title="Gerenciando o Banco de Dados" subtitle="" colorClass="text-accent"></SectionHeader>
+        </section>
+    )
+}
+
+function DicionarioDadosSection() {
+    return (
+        <section className="animate-fade-in space-y-6">
+            <SectionHeader title="Dicionários de Dados" subtitle="" colorClass="text-accent"></SectionHeader>
+        </section>
+    )
+}
+
+function QuizSection() {
+    return (
+        <section className="animate-fade-in">
+            <QuizTabs
+                normal={<ExamQuizSelector questions={QUIZ_DATA} mode="quiz" />}
+                ai={(
+                    <div className="space-y-4">
+                        <HighlightBox title="Como funciona?">
+                            <p>
+                                A IA usa os conteúdos selecionados de Comportamento Organizacional para gerar lotes de 1, 5 ou 10 perguntas inéditas com alternativas, resposta correta e explicação.
+                            </p>
+                        </HighlightBox>
+                        <AIQuizGenerator guideContext={COMPORTAMENTO_ORGANIZACIONAL_GUIDE_CONTEXT} topics={COMPORTAMENTO_ORGANIZACIONAL_TOPICS} />
+                    </div>
+                )}
+                kahoot={<ExamQuizSelector questions={QUIZ_DATA} mode="kahoot" />}
+                aiKahoot={<AIKahootQuiz guideContext={COMPORTAMENTO_ORGANIZACIONAL_GUIDE_CONTEXT} topics={COMPORTAMENTO_ORGANIZACIONAL_TOPICS} />}
+            />
         </section>
     );
 }
 
 
-export default function ComportamentoOrganizacionalSections({ activeSection }: ComportamentoOrganizacionalSectionsProps) {
+export default function AdministracaoProjetoBancoDadosSections({ activeSection }: AdministracaoProjetoBancoDadosSectionsProps) {
     switch (activeSection) {
         case 'intro':
             return <IntroSection />;
+        case 'modelagem':
+            return <ModelagemSection />;
+        case 'ddl':
+            return <DdlSection />;
+        case 'seguranca':
+            return <SegurancaSection />;
+        case 'arquitetura':
+            return <ArquiteturaSection />;
+        case 'gerenciando-instancia':
+            return <GerenciamentoSection />;
+        case 'dicionario-de-dados':
+            return <DicionarioDadosSection />;
+        case 'quiz':
+            return <QuizSection />;
+        case 'iaquiz':
+            return <QuizSection />;
         default:
             return null;
     }
