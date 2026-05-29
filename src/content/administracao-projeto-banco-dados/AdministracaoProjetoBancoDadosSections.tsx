@@ -1035,7 +1035,15 @@ function IntroSection() {
                   </tr>
                   <tr>
                     <td className="border-b border-border px-4 py-3 text-text">Modelagem</td>
-                    <td className="border-b border-border px-4 py-3">02 - SQL Data Modeler<br/>03 - SQL DDL e 04 - Índices.</td>
+                    <td className="border-b border-border px-4 py-3">02 - SQL Data Modeler</td>
+                  </tr>
+                  <tr>
+                    <td className="border-b border-border px-4 py-3 text-text">Objetos SQL</td>
+                    <td className="border-b border-border px-4 py-3">03 - SQL DDL</td>
+                  </tr>
+                  <tr>
+                    <td className="border-b border-border px-4 py-3 text-text">Desempenho</td>
+                    <td className="border-b border-border px-4 py-3">04 - índices</td>
                   </tr>
                   <tr className="bg-card/40">
                     <td className="border-b border-border px-4 py-3 text-text">Armazenamento</td>
