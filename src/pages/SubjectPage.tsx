@@ -2,11 +2,13 @@ import { useParams } from 'react-router-dom';
 import { getSubjectBySlug } from '../data/curriculum';
 import ComportamentoOrganizacionalContent from '../content/comportamento-organizacional/ComportamentoOrganizacionalContent';
 import MarketingContent from '../content/marketing-comercio-eletronico/MarketingContent';
+import MetodologiaCientificaContent from '../content/metodologia-cientifica/MetodologiaCientificaContent';
 import NotFoundPage from './NotFoundPage';
 
 const contentRegistry: Record<string, React.ComponentType> = {
   'comportamento-organizacional': ComportamentoOrganizacionalContent,
   'marketing-comercio-eletronico': MarketingContent,
+  'metodologia-cientifica': MetodologiaCientificaContent,
 };
 
 export default function SubjectPage() {
