@@ -9,7 +9,7 @@ export default function EstruturaDadosContent() {
   return (
     <SubjectContentLayout
       sections={ESTRUTURA_DADOS_SECTIONS}
-      eyebrow="3º período · 80h · EDTS"
+      eyebrow="3º período · 80h · ESTD"
       title={(
         <>
           Estrutura<br /><span className="gradient-text">de Dados</span>
